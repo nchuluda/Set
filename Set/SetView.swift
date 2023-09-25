@@ -69,7 +69,7 @@ struct CardView: View {
                 HStack {
                     Spacer()
                     ForEach(1...card.count, id: \.self) { _ in
-                        TriangleView(fill: card.fill)
+                        TriangleVariant(fill: card.fill)
                             .frame(maxWidth: geo.size.width / 3, maxHeight: .infinity)
                     }
                     Spacer()
@@ -78,7 +78,7 @@ struct CardView: View {
                 HStack {
                     Spacer()
                     ForEach(1...card.count, id: \.self) { _ in
-                        RectangleView(fill: card.fill)
+                        RectangleVariant(fill: card.fill)
                             .frame(maxWidth: geo.size.width / 3, maxHeight: .infinity)
                     }
                     Spacer()
@@ -87,7 +87,7 @@ struct CardView: View {
                 HStack {
                     Spacer()
                     ForEach(1...card.count, id: \.self) { _ in
-                        CapsuleView(fill: card.fill)
+                        CapsuleVariant(fill: card.fill)
                             .frame(maxWidth: geo.size.width / 3, maxHeight: .infinity)
                     }
                     Spacer()
@@ -99,7 +99,7 @@ struct CardView: View {
     }
     
     @ViewBuilder
-    func CapsuleView(fill: String) -> some View {
+    func CapsuleVariant(fill: String) -> some View {
         switch fill {
             case "empty":
                 Capsule()
@@ -116,6 +116,7 @@ struct CardView: View {
             case "solid":
                 Capsule()
                     .strokeBorder(card.color, lineWidth: 5)
+                    .overlay(Capsule().fill(card.color))
                     .aspectRatio(2/3, contentMode: .fit)
                     .padding(2)
             default:
@@ -124,7 +125,7 @@ struct CardView: View {
     }
     
     @ViewBuilder
-    func RectangleView(fill: String) -> some View {
+    func RectangleVariant(fill: String) -> some View {
         switch fill {
             case "empty":
                 Rectangle()
@@ -152,7 +153,7 @@ struct CardView: View {
     }
     
     @ViewBuilder
-    func TriangleView(fill: String) -> some View {
+    func TriangleVariant(fill: String) -> some View {
         switch fill {
             case "empty":
                 Triangle()
