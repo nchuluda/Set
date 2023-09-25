@@ -9,32 +9,44 @@ import SwiftUI
 
 struct SetView: View {
     @ObservedObject var viewModel: Set
+    var aspectRatio: CGFloat = 2/3
     
     var body: some View {
         VStack {
-            ScrollView {
-                cards
-            }
-            .padding()
+            cards
+                .padding()
             HStack {
                 Button("New Game", action: { viewModel.newGame() })
                 if !viewModel.deckEmpty {
                     Button("Deal 3 Cards", action: { viewModel.dealThreeCards() })
                 }
             }
-//            .padding()
+            .padding()
         }
     }
     
+    @ViewBuilder
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive (minimum: 85))]) {
-            ForEach(viewModel.cardsInPlay.indices, id: \.self) { index in
-                CardView(viewModel.cardsInPlay[index])
-                    .aspectRatio(2/3, contentMode: .fit)
-                    .onTapGesture {
-                        viewModel.choose(viewModel.cardsInPlay[index])
-                    }
+        let gridItemSize = bestWidth(count: viewModel.cardsInPlay.count)
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive (minimum: gridItemSize), spacing: 0)], spacing: 0) {
+                ForEach(viewModel.cardsInPlay.indices, id: \.self) { index in
+                    CardView(viewModel.cardsInPlay[index])
+                        .aspectRatio(2/3, contentMode: .fit)
+                        .onTapGesture {
+                            viewModel.choose(viewModel.cardsInPlay[index])
+                        }
+                        .padding(4)
+                }
             }
+        }
+    }
+    
+    private func bestWidth(count: Int) -> CGFloat {
+        if count <= 12 {
+            return 99.0
+        } else {
+            return 80.0
         }
     }
 }
@@ -93,7 +105,7 @@ struct CardView: View {
                     Spacer()
                 }
             default:
-                Text("Default")
+                Text("Error: Default Shape")
             }
         }
     }
@@ -103,22 +115,22 @@ struct CardView: View {
         switch fill {
             case "empty":
                 Capsule()
-                    .strokeBorder(card.color, lineWidth: 5)
+                    .strokeBorder(card.color, lineWidth: 3)
                     .aspectRatio(2/3, contentMode: .fit)
-                    .padding(2)
+                    .padding(1)
             case "stripe":
                 Capsule()
-                    .strokeBorder(card.color, lineWidth: 5)
+                    .strokeBorder(card.color, lineWidth: 3)
                     .overlay(Capsule().fill(card.color).opacity(0.5))
                     .opacity(0.5)
                     .aspectRatio(2/3, contentMode: .fit)
-                    .padding(2)
+                    .padding(1)
             case "solid":
                 Capsule()
-                    .strokeBorder(card.color, lineWidth: 5)
+                    .strokeBorder(card.color, lineWidth: 2)
                     .overlay(Capsule().fill(card.color))
                     .aspectRatio(2/3, contentMode: .fit)
-                    .padding(2)
+                    .padding(1)
             default:
                 Text("Error: Default Capsule")
         }
@@ -129,24 +141,24 @@ struct CardView: View {
         switch fill {
             case "empty":
                 Rectangle()
-                    .strokeBorder(card.color, lineWidth: 5)
+                    .strokeBorder(card.color, lineWidth: 3)
                     .aspectRatio(1, contentMode: .fit)
                     .rotationEffect(.degrees(45))
-                    .padding(2)
+                    .padding(1)
             case "stripe":
                 Rectangle()
-                    .strokeBorder(card.color, lineWidth: 5)
+                    .strokeBorder(card.color, lineWidth: 3)
                     .overlay(Rectangle().fill(card.color).opacity(0.5))
                     .opacity(0.5)
                     .aspectRatio(1, contentMode: .fit)
                     .rotationEffect(.degrees(45))
-                    .padding(2)
+                    .padding(1)
             case "solid":
                 Rectangle()
                     .fill(card.color)
                     .aspectRatio(1, contentMode: .fit)
                     .rotationEffect(.degrees(45))
-                    .padding(2)
+                    .padding(1)
             default:
                 Text("Error: Default Rectangle")
         }
@@ -157,11 +169,11 @@ struct CardView: View {
         switch fill {
             case "empty":
                 Triangle()
-                    .stroke(card.color, lineWidth: 5)
+                    .stroke(card.color, lineWidth: 3)
                     .aspectRatio(1, contentMode: .fit)
             case "stripe":
                 Triangle()
-                    .stroke(card.color, lineWidth: 5)
+                    .stroke(card.color, lineWidth: 3)
                     .overlay(Triangle().fill(card.color).opacity(0.5))
                     .opacity(0.5)
                     .aspectRatio(1, contentMode: .fit)
