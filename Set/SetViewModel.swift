@@ -27,4 +27,8 @@ class Set: ObservableObject {
     func dealThreeCards() {
         model.dealThreeCards()
     }
+    
+    func newGame() {
+        model = SetGame()
+    }
 }

@@ -16,10 +16,13 @@ struct SetView: View {
                 cards
             }
             .padding()
-            
-            if !viewModel.deckEmpty {
-                Button("Deal 3 More Cards", action: { viewModel.dealThreeCards() })
+            HStack {
+                Button("New Game", action: { viewModel.newGame() })
+                if !viewModel.deckEmpty {
+                    Button("Deal 3 Cards", action: { viewModel.dealThreeCards() })
+                }
             }
+//            .padding()
         }
     }
     
@@ -34,17 +37,6 @@ struct SetView: View {
             }
         }
     }
-//    var cards: some View {
-//        LazyVGrid(columns: [GridItem(.adaptive (minimum: 85))]) {
-//            ForEach(viewModel.cardsInPlay) { card in
-//                CardView(card)
-//                    .aspectRatio(2/3, contentMode: .fit)
-//                    .onTapGesture {
-//                        viewModel.choose(card)
-//                    }
-//            }
-//        }
-//    }
 }
 
 struct CardView: View {
@@ -60,122 +52,124 @@ struct CardView: View {
                 base.fill(.white)
                 base.stroke(.yellow, lineWidth: 4)
                 base.stroke(.orange, lineWidth: 2)
-                switch card.shape {
-                case "triangle":
-                    HStack {
-                        ForEach(1...card.count, id: \.self) { _ in TriangleView() }
-                    }
-                case "rectangle":
-                    HStack {
-                        ForEach(1...card.count, id: \.self) { _ in RectangleView() }
-                    }
-                case "capsule":
-                    HStack {
-                        ForEach(1...card.count, id: \.self) { _ in CapsuleView() }
-                    }
-                default:
-                    Text("Default")
-                }
+                    .overlay(cardShape(shape: card.shape))
             } else {
                 base.fill(.white)
                 base.stroke(.black, lineWidth: 2)
-                
-                switch card.shape {
-                    case "triangle":
-                        HStack {
-                            ForEach(1...card.count, id: \.self) { _ in TriangleView() }
-                        }
-                    case "rectangle":
-                        HStack {
-                            ForEach(1...card.count, id: \.self) { _ in RectangleView() }
-                        }
-                    case "capsule":
-                        HStack {
-                            ForEach(1...card.count, id: \.self) { _ in CapsuleView() }
-                        }
-                    default:
-                        Text("Default")
-                }
+                    .overlay(cardShape(shape: card.shape))
             }
         }
     }
     
-    func CapsuleView() -> some View {
-        if card.fill == "empty" {
-            return(AnyView(
+    @ViewBuilder
+    func cardShape(shape: String) -> some View {
+        GeometryReader { geo in
+            switch shape {
+            case "triangle":
+                HStack {
+                    Spacer()
+                    ForEach(1...card.count, id: \.self) { _ in
+                        TriangleView(fill: card.fill)
+                            .frame(maxWidth: geo.size.width / 3, maxHeight: .infinity)
+                    }
+                    Spacer()
+                }
+            case "rectangle":
+                HStack {
+                    Spacer()
+                    ForEach(1...card.count, id: \.self) { _ in
+                        RectangleView(fill: card.fill)
+                            .frame(maxWidth: geo.size.width / 3, maxHeight: .infinity)
+                    }
+                    Spacer()
+                }
+            case "capsule":
+                HStack {
+                    Spacer()
+                    ForEach(1...card.count, id: \.self) { _ in
+                        CapsuleView(fill: card.fill)
+                            .frame(maxWidth: geo.size.width / 3, maxHeight: .infinity)
+                    }
+                    Spacer()
+                }
+            default:
+                Text("Default")
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func CapsuleView(fill: String) -> some View {
+        switch fill {
+            case "empty":
                 Capsule()
                     .strokeBorder(card.color, lineWidth: 5)
-                    .frame(width: 20, height: 40)
-            ))
-        } else if card.fill == "stripe" {
-            return(AnyView(
+                    .aspectRatio(2/3, contentMode: .fit)
+                    .padding(2)
+            case "stripe":
                 Capsule()
                     .strokeBorder(card.color, lineWidth: 5)
                     .overlay(Capsule().fill(card.color).opacity(0.5))
                     .opacity(0.5)
-                    .frame(width: 25, height: 40)
-            ))
-        } else {
-            return(AnyView(
+                    .aspectRatio(2/3, contentMode: .fit)
+                    .padding(2)
+            case "solid":
                 Capsule()
                     .strokeBorder(card.color, lineWidth: 5)
-                    .overlay(Capsule().fill(card.color))
-                    .frame(width: 25, height: 40)
-            ))
+                    .aspectRatio(2/3, contentMode: .fit)
+                    .padding(2)
+            default:
+                Text("Error: Default Capsule")
         }
     }
     
-    func RectangleView() -> some View {
-        if card.fill == "empty" {
-            return(AnyView(
+    @ViewBuilder
+    func RectangleView(fill: String) -> some View {
+        switch fill {
+            case "empty":
                 Rectangle()
                     .strokeBorder(card.color, lineWidth: 5)
-                    .frame(width: 25, height: 25)
+                    .aspectRatio(1, contentMode: .fit)
                     .rotationEffect(.degrees(45))
                     .padding(2)
-            ))
-        } else if card.fill == "stripe" {
-            return(AnyView(
+            case "stripe":
                 Rectangle()
                     .strokeBorder(card.color, lineWidth: 5)
                     .overlay(Rectangle().fill(card.color).opacity(0.5))
                     .opacity(0.5)
-                    .frame(width: 25, height: 25)
+                    .aspectRatio(1, contentMode: .fit)
                     .rotationEffect(.degrees(45))
                     .padding(2)
-            ))
-        } else {
-            return(AnyView(
+            case "solid":
                 Rectangle()
                     .fill(card.color)
-                    .frame(width: 25, height: 25)
+                    .aspectRatio(1, contentMode: .fit)
                     .rotationEffect(.degrees(45))
                     .padding(2)
-            ))
+            default:
+                Text("Error: Default Rectangle")
         }
     }
     
-    func TriangleView() -> some View {
-        if card.fill == "empty" {
-            return(AnyView(
+    @ViewBuilder
+    func TriangleView(fill: String) -> some View {
+        switch fill {
+            case "empty":
                 Triangle()
                     .stroke(card.color, lineWidth: 5)
-                    .frame(width: 25, height: 25)
-            ))
-        } else if card.fill == "stripe" {
-            return(AnyView(
+                    .aspectRatio(1, contentMode: .fit)
+            case "stripe":
                 Triangle()
                     .stroke(card.color, lineWidth: 5)
                     .overlay(Triangle().fill(card.color).opacity(0.5))
                     .opacity(0.5)
-                    .frame(width: 25, height: 25)
-            ))
-        } else {
-            return(AnyView(
+                    .aspectRatio(1, contentMode: .fit)
+            case "solid":
                 Triangle()
                     .fill(card.color)
-                    .frame(width: 25, height: 25)
-            ))
+                    .aspectRatio(1, contentMode: .fit)
+            default:
+                Text("Error: Default Triangle")
         }
     }
     

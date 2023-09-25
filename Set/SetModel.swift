@@ -13,8 +13,10 @@ struct SetGame {
     private(set) var cardsInPlay: Array<Card>
     private(set) var deckEmpty = false
     
-    enum shapes1: CaseIterable {
-        case triangle, rectangle, capsule
+    enum Shapes1: CaseIterable {
+        case triangle
+        case rectangle
+        case capsule
     }
     
     let colors = [Color.red, Color.purple, Color.green]
