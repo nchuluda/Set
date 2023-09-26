@@ -9,19 +9,26 @@ import SwiftUI
 
 struct SetView: View {
     @ObservedObject var viewModel: Set
-    var aspectRatio: CGFloat = 2/3
+    var cardAspectRatio: CGFloat = 2/3
     
     var body: some View {
-        VStack {
-            cards
-                .padding()
-            HStack {
-                Button("New Game", action: { viewModel.newGame() })
-                if !viewModel.deckEmpty {
-                    Button("Deal 3 Cards", action: { viewModel.dealThreeCards() })
+        if !viewModel.winGame {
+            VStack {
+                cards
+                    .padding()
+                HStack {
+                    Button("New Game", action: { viewModel.newGame() })
+                    if !viewModel.deckEmpty {
+                        Button("Deal 3 Cards", action: { viewModel.dealThreeCards() })
+                    }
                 }
+                .padding()
             }
-            .padding()
+        } else {
+            Text("Congratulations!").font(.largeTitle)
+            Text("You've cleared the entire deck of cards!").font(.caption)
+            Spacer()
+            Button("New Game", action: { viewModel.newGame() })
         }
     }
     
@@ -32,7 +39,7 @@ struct SetView: View {
             LazyVGrid(columns: [GridItem(.adaptive (minimum: gridItemSize), spacing: 0)], spacing: 0) {
                 ForEach(viewModel.cardsInPlay.indices, id: \.self) { index in
                     CardView(viewModel.cardsInPlay[index])
-                        .aspectRatio(2/3, contentMode: .fit)
+                        .aspectRatio(cardAspectRatio, contentMode: .fit)
                         .onTapGesture {
                             viewModel.choose(viewModel.cardsInPlay[index])
                         }
@@ -46,7 +53,7 @@ struct SetView: View {
         if count <= 12 {
             return 99.0
         } else {
-            return 80.0
+            return 90.0
         }
     }
 }

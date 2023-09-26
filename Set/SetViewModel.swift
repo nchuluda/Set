@@ -21,6 +21,7 @@ class Set: ObservableObject {
     var cards: Array<SetGame.Card> { model.cards }
     var cardsInPlay: Array<SetGame.Card> { model.cardsInPlay }
     var deckEmpty: Bool { model.deckEmpty }
+    var winGame: Bool { model.winGame }
     
     func choose(_ card: SetGame.Card) { model.choose(card) }
     
