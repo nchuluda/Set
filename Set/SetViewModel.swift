@@ -20,6 +20,7 @@ class Set: ObservableObject {
     
     var cards: Array<SetGame.Card> { model.cards }
     var cardsInPlay: Array<SetGame.Card> { model.cardsInPlay }
+    var completedSets: Array<SetGame.CardSet> { model.completedSets }
     var deckEmpty: Bool { model.deckEmpty }
     var winGame: Bool { model.winGame }
     
@@ -31,5 +32,9 @@ class Set: ObservableObject {
     
     func newGame() {
         model = SetGame()
+    }
+    
+    func setExistsIn(cardsInPlay: Array<SetGame.Card>) -> Array<SetGame.CardSet> {
+        return model.setExistsIn(cardsInPlay: cardsInPlay)
     }
 }

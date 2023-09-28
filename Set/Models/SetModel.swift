@@ -13,6 +13,11 @@ struct SetGame {
     private(set) var cardsInPlay: Array<Card>
     private(set) var deckEmpty = false
     private(set) var winGame = false
+    private(set) var showHint = false
+    private(set) var existingSet: Array<CardSet>
+    private(set) var completedSets: Array<CardSet>
+    private(set) var setId = 1
+    
     
 //    let colors = [Color.red, Color.purple, Color.green]
 //    let counts = [1, 2, 3]
@@ -22,6 +27,8 @@ struct SetGame {
     init() {
         cards = []
         cardsInPlay = []
+        completedSets = []
+        existingSet = []
         var cardId = 1
         for color in Colors.allCases {
             for count in Counts.allCases {
@@ -76,38 +83,27 @@ struct SetGame {
                         if let potentialMatchIndex3 = indexOfThirdSelectedCard {
                             print("card 3: \(cardsInPlay[potentialMatchIndex3])")
                             
-                            let card1 = cardsInPlay[potentialMatchIndex1]
-                            let card2 = cardsInPlay[potentialMatchIndex2]
-                            let card3 = cardsInPlay[potentialMatchIndex3]
+                            var card1 = cardsInPlay[potentialMatchIndex1]
+                            var card2 = cardsInPlay[potentialMatchIndex2]
+                            var card3 = cardsInPlay[potentialMatchIndex3]
                                                         
-                            if (card1.color == card2.color && card2.color == card3.color) ||
-                                (card1.color != card2.color && card2.color != card3.color && card1.color != card3.color) {
-
-                                if (card1.fill == card2.fill && card2.fill == card3.fill) ||
-                                    (card1.fill != card2.fill && card2.fill != card3.fill && card1.fill != card3.fill) {
-
-                                    if (card1.count == card2.count && card2.count == card3.count) ||
-                                        (card1.count != card2.count && card2.count != card3.count && card1.count != card3.count) {
-
-                                        if (card1.shape == card2.shape && card2.shape == card3.shape) ||
-                                            (card1.shape != card2.shape && card2.shape != card3.shape && card1.shape != card3.shape) {
-
-                                            print("Congratulations! This is a set.")
-
-                                            cardsInPlay.remove(atOffsets: [potentialMatchIndex1, potentialMatchIndex2, potentialMatchIndex3])
-                                        
-                                            if cardsInPlay.count < 12 {
-                                                if cards.count >= 3 {
-                                                    dealThreeCards()
-                                                } else {
-                                                    if cardsInPlay.count == 0 { winGame = true }
-                                                }
-                                            }
-                                            
-                                        // Not a set, clear selection
-                                        } else { notSetReset(pmi1: potentialMatchIndex1, pmi2: potentialMatchIndex2, pmi3: potentialMatchIndex3) }
-                                    } else { notSetReset(pmi1: potentialMatchIndex1, pmi2: potentialMatchIndex2, pmi3: potentialMatchIndex3) }
-                                } else { notSetReset(pmi1: potentialMatchIndex1, pmi2: potentialMatchIndex2, pmi3: potentialMatchIndex3) }
+                            if isSet(card1: card1, card2: card2, card3: card3) {
+                                card1.isSelected = false
+                                card2.isSelected = false
+                                card3.isSelected = false
+                                completedSets.append(CardSet(cards: [card1, card2, card3]))
+                                setId += 1
+                                
+                                cardsInPlay.remove(atOffsets: [potentialMatchIndex1, potentialMatchIndex2, potentialMatchIndex3])
+                                
+                                if cardsInPlay.count < 12 {
+                                    if cards.count >= 3 {
+                                        dealThreeCards()
+                                    } else {
+                                        if cardsInPlay.count == 0 { winGame = true }
+                                    }
+                                }
+                                
                             } else { notSetReset(pmi1: potentialMatchIndex1, pmi2: potentialMatchIndex2, pmi3: potentialMatchIndex3) }
                         }
                     }
@@ -117,6 +113,54 @@ struct SetGame {
                 cardsInPlay[chosenIndex].isSelected.toggle()
             }
         }
+    }
+    
+    func isSet(card1: Card, card2: Card, card3: Card) -> Bool {
+        if (card1.color == card2.color && card2.color == card3.color) ||
+            (card1.color != card2.color && card2.color != card3.color && card1.color != card3.color) {
+            if (card1.fill == card2.fill && card2.fill == card3.fill) ||
+                (card1.fill != card2.fill && card2.fill != card3.fill && card1.fill != card3.fill) {
+                if (card1.count == card2.count && card2.count == card3.count) ||
+                    (card1.count != card2.count && card2.count != card3.count && card1.count != card3.count) {
+                    if (card1.shape == card2.shape && card2.shape == card3.shape) ||
+                        (card1.shape != card2.shape && card2.shape != card3.shape && card1.shape != card3.shape) {
+                        return true
+                    } else { return false }
+                } else { return false }
+            } else { return false }
+        } else { return false }
+    }
+    
+    mutating func setExistsIn(cardsInPlay: Array<Card>) -> Array<CardSet> {
+        existingSet = []
+        
+        // Skip checking sets if there are not at least 3 cards
+        if cardsInPlay.count >= 3 {
+
+            // Skip checking sets if three cards are not all different
+            for card1 in cardsInPlay {
+                for card2 in cardsInPlay {
+                    if card1 != card2 {
+                        for card3 in cardsInPlay {
+                            if (card1 != card3 && card2 != card3) {
+                                
+                                // Check if is set
+                                if isSet(card1: card1, card2: card2, card3: card3) {
+
+                                    // Add found set to array existingSet
+                                    existingSet.append(CardSet(cards: [card1, card2, card3]))
+                                    
+                                    // Stop looping as soon as first set is found
+                                    return existingSet
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // No sets found, existingSet is returned empty
+        return existingSet
     }
     
     mutating func dealThreeCards() {
@@ -140,7 +184,7 @@ struct SetGame {
         cardsInPlay[pmi3].isSelected.toggle()
     }
     
-    struct Card: Equatable, Identifiable {
+    struct Card: Equatable, Identifiable, Hashable {
         var id: Int
         var color: Color
         var count: Int
@@ -148,6 +192,11 @@ struct SetGame {
         var shape: String
         var isSelected = false
         var isSet = false
+    }
+    
+    struct CardSet {
+//        var id: Int
+        var cards: Array<Card>
     }
 }
 

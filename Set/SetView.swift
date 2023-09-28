@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SetView: View {
     @ObservedObject var viewModel: Set
+    @State private var showCompletedSets = false
     var cardAspectRatio: CGFloat = 2/3
     
     var body: some View {
@@ -17,12 +18,22 @@ struct SetView: View {
                 cards
                     .padding()
                 HStack {
+                    Spacer()
                     Button("New Game", action: { viewModel.newGame() })
+                    Spacer()
+                    Button("Hint", action: { print( viewModel.setExistsIn(cardsInPlay: viewModel.cardsInPlay)) })
+                    Spacer()
+                    Button("Sets", action: { showCompletedSets.toggle() })
+                        .sheet(isPresented: $showCompletedSets) {
+                            CompletedSetsView(viewModel: viewModel, showCompletedSets: self.$showCompletedSets)
+                        }
+                    Spacer()
                     if !viewModel.deckEmpty {
                         Button("Deal 3 Cards", action: { viewModel.dealThreeCards() })
                     }
+                    Spacer()
                 }
-                .padding()
+//                .padding()
             }
         } else {
             Text("Congratulations!").font(.largeTitle)
