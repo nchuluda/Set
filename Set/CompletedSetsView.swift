@@ -19,8 +19,6 @@ struct CompletedSetsView: View {
             ScrollView {
                 VStack {
                     ForEach(viewModel.completedSets.indices, id: \.self) { index in
-                        
-//                            .frame(maxWidth: .infinity, alignment: .leading)
                         HStack{
                             Text("\(index + 1).").font(.largeTitle)
                             Spacer()
@@ -45,19 +43,3 @@ struct CompletedSetsView: View {
         }
     }
 }
-
-//struct SheetView: View {
-//    @Environment(\.dismiss) private var dismiss
-//
-//    var body: some View {
-//        NavigationView {
-//            Text("Hello")
-//            .navigationBarTitle(Text("Sheet 1 Title"), displayMode: .inline)
-//            .navigationBarItems(trailing: Button(action: {
-//                showingPopover = false
-//            }) {
-//                Text("Done").bold()
-//            })
-//        }
-//    }
-//}

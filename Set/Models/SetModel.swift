@@ -14,7 +14,6 @@ struct SetGame {
     private(set) var deckEmpty = false
     private(set) var winGame = false
     private(set) var showHint = false
-    private(set) var existingSet: Array<CardSet>
     private(set) var completedSets: Array<CardSet>
     private(set) var setId = 1
     
@@ -28,7 +27,6 @@ struct SetGame {
         cards = []
         cardsInPlay = []
         completedSets = []
-        existingSet = []
         var cardId = 1
         for color in Colors.allCases {
             for count in Counts.allCases {
@@ -131,27 +129,27 @@ struct SetGame {
         } else { return false }
     }
     
-    mutating func setExistsIn(cardsInPlay: Array<Card>) -> Array<CardSet> {
-        existingSet = []
-        
+    mutating func setExistsIn(cardsInPlay: Array<Card>) {
         // Skip checking sets if there are not at least 3 cards
         if cardsInPlay.count >= 3 {
 
             // Skip checking sets if three cards are not all different
-            for card1 in cardsInPlay {
-                for card2 in cardsInPlay {
-                    if card1 != card2 {
-                        for card3 in cardsInPlay {
-                            if (card1 != card3 && card2 != card3) {
-                                
-                                // Check if is set
-                                if isSet(card1: card1, card2: card2, card3: card3) {
-
-                                    // Add found set to array existingSet
-                                    existingSet.append(CardSet(cards: [card1, card2, card3]))
+            for i1 in cardsInPlay.indices {
+                for i2 in cardsInPlay.indices {
+                    if cardsInPlay[i1] != cardsInPlay[i2] {
+                        for i3 in cardsInPlay.indices {
+                            if (cardsInPlay[i1] != cardsInPlay[i3] && cardsInPlay[i2] != cardsInPlay[i3]) {
+                            
+                            // Check if is set
+                                if isSet(card1: cardsInPlay[i1], card2: cardsInPlay[i2], card3: cardsInPlay[i3]) {
                                     
+                                    // Mark cards in set to display hint
+                                    self.cardsInPlay[i1].showHint = true
+                                    self.cardsInPlay[i2].showHint = true
+                                    self.cardsInPlay[i3].showHint = true
+
                                     // Stop looping as soon as first set is found
-                                    return existingSet
+                                    return
                                 }
                             }
                         }
@@ -160,7 +158,7 @@ struct SetGame {
             }
         }
         // No sets found, existingSet is returned empty
-        return existingSet
+        return
     }
     
     mutating func dealThreeCards() {
@@ -192,10 +190,10 @@ struct SetGame {
         var shape: String
         var isSelected = false
         var isSet = false
+        var showHint = false
     }
     
     struct CardSet {
-//        var id: Int
         var cards: Array<Card>
     }
 }

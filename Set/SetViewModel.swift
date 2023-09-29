@@ -34,7 +34,7 @@ class Set: ObservableObject {
         model = SetGame()
     }
     
-    func setExistsIn(cardsInPlay: Array<SetGame.Card>) -> Array<SetGame.CardSet> {
-        return model.setExistsIn(cardsInPlay: cardsInPlay)
+    func setExistsIn(cardsInPlay: Array<SetGame.Card>) {
+        model.setExistsIn(cardsInPlay: cardsInPlay)
     }
 }

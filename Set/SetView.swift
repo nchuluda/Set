@@ -10,6 +10,8 @@ import SwiftUI
 struct SetView: View {
     @ObservedObject var viewModel: Set
     @State private var showCompletedSets = false
+    @State private var showNewGameAlert = false
+    
     var cardAspectRatio: CGFloat = 2/3
     
     var body: some View {
@@ -17,29 +19,10 @@ struct SetView: View {
             VStack {
                 cards
                     .padding()
-                HStack {
-                    Spacer()
-                    Button("New Game", action: { viewModel.newGame() })
-                    Spacer()
-                    Button("Hint", action: { print( viewModel.setExistsIn(cardsInPlay: viewModel.cardsInPlay)) })
-                    Spacer()
-                    Button("Sets", action: { showCompletedSets.toggle() })
-                        .sheet(isPresented: $showCompletedSets) {
-                            CompletedSetsView(viewModel: viewModel, showCompletedSets: self.$showCompletedSets)
-                        }
-                    Spacer()
-                    if !viewModel.deckEmpty {
-                        Button("Deal 3 Cards", action: { viewModel.dealThreeCards() })
-                    }
-                    Spacer()
-                }
-//                .padding()
+                buttons
             }
         } else {
-            Text("Congratulations!").font(.largeTitle)
-            Text("You've cleared the entire deck of cards!").font(.caption)
-            Spacer()
-            Button("New Game", action: { viewModel.newGame() })
+            gameOverPage
         }
     }
     
@@ -57,6 +40,34 @@ struct SetView: View {
                         .padding(4)
                 }
             }
+        }
+    }
+    
+    @ViewBuilder
+    var gameOverPage: some View {
+        Text("Congratulations!").font(.largeTitle)
+        Text("You've cleared the entire deck of cards!").font(.caption)
+        Spacer()
+        Button("New Game", action: { viewModel.newGame() })
+    }
+    
+    @ViewBuilder
+    var buttons: some View {
+        HStack {
+            Spacer()
+            Button("New Game", action: { viewModel.newGame() })
+            Spacer()
+            Button("Hint", action: { viewModel.setExistsIn(cardsInPlay: viewModel.cardsInPlay) })
+            Spacer()
+            Button("Sets", action: { showCompletedSets.toggle() })
+                .sheet(isPresented: $showCompletedSets) {
+                    CompletedSetsView(viewModel: viewModel, showCompletedSets: self.$showCompletedSets)
+                }
+            Spacer()
+            if !viewModel.deckEmpty {
+                Button("Deal 3 Cards", action: { viewModel.dealThreeCards() })
+            }
+            Spacer()
         }
     }
     
@@ -78,11 +89,17 @@ struct CardView: View {
         let base = RoundedRectangle(cornerRadius: 12)
         
         ZStack {
+            
             if card.isSelected {
-                base.fill(.white)
+                base.fill(.yellow).opacity(0.1)
                 base.stroke(.yellow, lineWidth: 4)
                 base.stroke(.orange, lineWidth: 2)
                     .overlay(cardShape(shape: card.shape))
+            } else if card.showHint {
+                    base.fill(.blue).opacity(0.1)
+                    base.stroke(.blue, lineWidth: 4)
+                    base.stroke(.cyan, lineWidth: 2)
+                        .overlay(cardShape(shape: card.shape))
             } else {
                 base.fill(.white)
                 base.stroke(.black, lineWidth: 2)
