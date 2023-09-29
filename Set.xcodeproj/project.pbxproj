@@ -13,6 +13,11 @@
 		D885C42B2AB27CCF005FD1A6 /* SetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D885C42A2AB27CCF005FD1A6 /* SetView.swift */; };
 		D885C42D2AB27CD0005FD1A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D885C42C2AB27CD0005FD1A6 /* Assets.xcassets */; };
 		D885C4302AB27CD0005FD1A6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D885C42F2AB27CD0005FD1A6 /* Preview Assets.xcassets */; };
+		D8CAC9F92AC3137D002EEC1B /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CAC9F82AC3137D002EEC1B /* Colors.swift */; };
+		D8CAC9FB2AC313C2002EEC1B /* Counts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CAC9FA2AC313C2002EEC1B /* Counts.swift */; };
+		D8CAC9FD2AC313E9002EEC1B /* Fills.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CAC9FC2AC313E9002EEC1B /* Fills.swift */; };
+		D8CAC9FF2AC31416002EEC1B /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CAC9FE2AC31416002EEC1B /* Shapes.swift */; };
+		D8CACA022AC324B4002EEC1B /* CompletedSetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CACA012AC324B4002EEC1B /* CompletedSetsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +28,11 @@
 		D885C42A2AB27CCF005FD1A6 /* SetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetView.swift; sourceTree = "<group>"; };
 		D885C42C2AB27CD0005FD1A6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D885C42F2AB27CD0005FD1A6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		D8CAC9F82AC3137D002EEC1B /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		D8CAC9FA2AC313C2002EEC1B /* Counts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Counts.swift; sourceTree = "<group>"; };
+		D8CAC9FC2AC313E9002EEC1B /* Fills.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fills.swift; sourceTree = "<group>"; };
+		D8CAC9FE2AC31416002EEC1B /* Shapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
+		D8CACA012AC324B4002EEC1B /* CompletedSetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedSetsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +67,8 @@
 			children = (
 				D885C4282AB27CCF005FD1A6 /* SetApp.swift */,
 				D885C42A2AB27CCF005FD1A6 /* SetView.swift */,
-				D81634D52AB8C732007E2D0F /* SetModel.swift */,
+				D8CACA012AC324B4002EEC1B /* CompletedSetsView.swift */,
+				D8CACA002AC3243D002EEC1B /* Models */,
 				D81634D72AB8CEE6007E2D0F /* SetViewModel.swift */,
 				D885C42C2AB27CD0005FD1A6 /* Assets.xcassets */,
 				D885C42E2AB27CD0005FD1A6 /* Preview Content */,
@@ -71,6 +82,18 @@
 				D885C42F2AB27CD0005FD1A6 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		D8CACA002AC3243D002EEC1B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D81634D52AB8C732007E2D0F /* SetModel.swift */,
+				D8CAC9FE2AC31416002EEC1B /* Shapes.swift */,
+				D8CAC9FC2AC313E9002EEC1B /* Fills.swift */,
+				D8CAC9FA2AC313C2002EEC1B /* Counts.swift */,
+				D8CAC9F82AC3137D002EEC1B /* Colors.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,8 +166,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8CAC9FD2AC313E9002EEC1B /* Fills.swift in Sources */,
 				D81634D82AB8CEE6007E2D0F /* SetViewModel.swift in Sources */,
+				D8CAC9F92AC3137D002EEC1B /* Colors.swift in Sources */,
+				D8CAC9FF2AC31416002EEC1B /* Shapes.swift in Sources */,
 				D885C42B2AB27CCF005FD1A6 /* SetView.swift in Sources */,
+				D8CACA022AC324B4002EEC1B /* CompletedSetsView.swift in Sources */,
+				D8CAC9FB2AC313C2002EEC1B /* Counts.swift in Sources */,
 				D885C4292AB27CCF005FD1A6 /* SetApp.swift in Sources */,
 				D81634D62AB8C732007E2D0F /* SetModel.swift in Sources */,
 			);
